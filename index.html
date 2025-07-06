@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>跨网络文件共享平台</title>
+    <title>资源分享库</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -48,33 +49,10 @@
         }
         
         header h1 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             margin-bottom: 10px;
             color: #fff;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-        }
-        
-        .github-info {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: center;
-        }
-        
-        .github-info h2 {
-            color: #4fc3f7;
-            margin-bottom: 15px;
-        }
-        
-        .json-url {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            font-family: monospace;
-            word-break: break-all;
-            font-size: 0.9rem;
         }
         
         .content {
@@ -110,8 +88,16 @@
             gap: 10px;
         }
         
+        .panel h2 i {
+            color: #29b6f6;
+        }
+        
         .announcement {
             background: rgba(106, 27, 154, 0.8);
+        }
+        
+        .announcement h2 {
+            color: #e1bee7;
         }
         
         .contact-info {
@@ -146,6 +132,12 @@
         .contact-method:hover {
             background: rgba(255, 255, 255, 0.2);
             transform: scale(1.05);
+        }
+        
+        .contact-method i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #4fc3f7;
         }
         
         .qq-group {
@@ -183,6 +175,7 @@
             display: flex;
             align-items: center;
             transition: all 0.3s ease;
+            position: relative;
         }
         
         .file-item:hover {
@@ -219,10 +212,15 @@
             color: #b0bec5;
             display: flex;
             gap: 15px;
+            flex-wrap: wrap;
         }
         
         .file-size {
             color: #81c784;
+        }
+        
+        .file-type {
+            color: #ff9e7d;
         }
         
         .file-actions {
@@ -262,6 +260,28 @@
             background: linear-gradient(45deg, #0039cb, #2962ff);
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(41, 98, 255, 0.4);
+        }
+        
+        .magnet-btn {
+            background: linear-gradient(45deg, #ff5722, #ff9800);
+            color: white;
+        }
+        
+        .magnet-btn:hover {
+            background: linear-gradient(45deg, #e64a19, #f57c00);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 87, 34, 0.4);
+        }
+        
+        .copy-btn {
+            background: linear-gradient(45deg, #9c27b0, #e040fb);
+            color: white;
+        }
+        
+        .copy-btn:hover {
+            background: linear-gradient(45deg, #7b1fa2, #d500f9);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(156, 39, 176, 0.4);
         }
         
         .stats {
@@ -477,79 +497,93 @@
             display: none;
         }
         
-        .update-status {
-            text-align: center;
-            margin-top: 10px;
-            padding: 10px;
+        .link-box {
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 8px;
+            padding: 10px;
+            margin: 10px 0;
             font-size: 0.9rem;
+            word-break: break-all;
             display: none;
         }
         
-        .update-success {
-            background: rgba(46, 204, 113, 0.2);
-            border-left: 4px solid #2ecc71;
+        .copy-notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(46, 204, 113, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            z-index: 1000;
+            display: none;
+            animation: fadeInOut 2s ease-in-out;
         }
         
-        .update-error {
-            background: rgba(231, 76, 60, 0.2);
-            border-left: 4px solid #e74c3c;
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            20% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            80% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(20px); }
         }
         
-        .file-type-icon {
-            font-size: 24px;
-            margin-right: 10px;
+        .link-toggle {
+            color: #4fc3f7;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: inline-block;
         }
     </style>
 </head>
 <body>
     <div class="secret-indicator" id="secretIndicator">点击次数: <span id="clickCount">0</span>/20</div>
+    <div class="copy-notification" id="copyNotification">链接已复制到剪贴板！</div>
     
     <div class="password-modal" id="passwordModal">
         <div class="password-box">
-            <h3>管理员验证</h3>
+            <h3><i class="fas fa-lock"></i> 管理员验证</h3>
             <input type="password" class="password-input" id="adminPassword" placeholder="请输入管理员密码">
-            <button class="submit-btn" onclick="checkPassword()">验证</button>
+            <button class="submit-btn" onclick="checkPassword()">
+                <i class="fas fa-check"></i> 验证
+            </button>
             <div class="message" id="passwordMessage"></div>
         </div>
     </div>
     
     <div class="container">
         <header>
-            <h1>跨网络文件共享平台</h1>
-            <p>基于GitHub的实时文件共享系统</p>
+            <h1><i class="fas fa-magnet"></i> 资源分享库</h1>
+            <p>支持磁力链接、网址和云盘资源下载</p>
         </header>
         
-        <div class="github-info">
-            <h2>已配置的GitHub JSON文件</h2>
-            <div class="json-url" id="jsonUrlDisplay">https://raw.githubusercontent.com/tong-rog/file-share/refs/heads/main/files.json</div>
-            <p>此URL用于实时获取文件列表数据</p>
-        </div>
-        
         <div class="system-message">
-            <p>当管理员更新GitHub上的JSON文件后，所有用户都能实时看到最新内容</p>
+            <p><i class="fas fa-info-circle"></i> 点击链接按钮复制磁力链或网址，点击云盘按钮跳转到下载页面</p>
         </div>
         
         <div class="content">
             <div class="panel announcement">
-                <h2>公告栏</h2>
+                <h2><i class="fas fa-bullhorn"></i> 公告栏</h2>
                 
                 <div class="upload-instructions">
-                    <h4>文件上传说明</h4>
-                    <p>如需上传文件，请将以下信息通过QQ群发送给管理员：</p>
+                    <h4><i class="fas fa-info-circle"></i> 文件上传说明</h4>
+                    <p>如需上传资源，请将以下信息通过QQ群发送给管理员：</p>
                     <ul>
-                        <li>文件名</li>
-                        <li>文件描述（可选）</li>
-                        <li>云盘下载链接</li>
-                        <li>提取码（如果有）</li>
+                        <li>资源名称</li>
+                        <li>资源描述（可选）</li>
+                        <li>磁力链接/下载网址</li>
+                        <li>云盘链接和提取码（如果有）</li>
                     </ul>
-                    <p>管理员会尽快审核并添加到文件列表中！</p>
+                    <p>管理员会尽快审核并添加到资源列表中！</p>
                 </div>
                 
                 <div class="contact-info">
-                    <h3>官方QQ群</h3>
+                    <h3><i class="fas fa-users"></i> 官方QQ群</h3>
                     <div class="contact-methods">
                         <div class="contact-method">
+                            <i class="fab fa-qq"></i>
                             <div class="qq-group">964170677</div>
                             <p>加入QQ群联系管理员</p>
                         </div>
@@ -557,93 +591,84 @@
                 </div>
                 
                 <div class="admin-panel" id="adminPanel">
-                    <h3>管理员更新面板</h3>
+                    <h3><i class="fas fa-user-shield"></i> 管理员更新面板</h3>
                     <div class="json-editor">
                         <textarea id="jsonData" class="json-textarea" placeholder="在此粘贴JSON格式的文件数据..."></textarea>
-                        <button class="json-btn" onclick="updateFileList()">更新文件列表</button>
+                        <button class="json-btn" onclick="updateFileList()">
+                            <i class="fas fa-sync-alt"></i> 更新文件列表
+                        </button>
                     </div>
                     <div class="admin-instructions">
-                        <p><strong>使用说明：</strong> 获取JSON文件内容后粘贴到上方文本框，点击"更新文件列表"按钮即可预览效果。</p>
-                        <p><strong>重要提示：</strong> 要永久更新，请将JSON内容复制到GitHub上的files.json文件</p>
-                        <p class="update-status update-success" id="updateSuccess">文件更新成功！预览效果已显示</p>
-                        <p class="update-status update-error" id="updateError">更新失败，请检查JSON格式</p>
+                        <p><strong>使用说明：</strong> 获取JSON文件内容后粘贴到上方文本框，点击"更新文件列表"按钮即可。</p>
+                        <p>JSON文件路径: <span id="jsonPath">files.json</span></p>
                     </div>
                 </div>
             </div>
             
             <div class="panel">
-                <h2>文件下载区</h2>
+                <h2><i class="fas fa-file-download"></i> 资源下载区</h2>
                 <div class="file-list" id="fileList">
                     <div class="file-item">
-                        <div class="file-icon">⏳</div>
+                        <div class="file-icon">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
                         <div class="file-details">
-                            <div class="file-name">正在加载文件列表...</div>
-                            <div class="file-info">从GitHub获取最新数据</div>
+                            <div class="file-name">正在加载资源列表...</div>
+                            <div class="file-info">请稍候</div>
                         </div>
                     </div>
                 </div>
                 
                 <div class="stats">
-                    <div>总文件数: <span id="totalFiles">0</span></div>
-                    <div>总下载量: <span id="totalDownloads">0</span></div>
+                    <div><i class="fas fa-database"></i> 总资源数: <span id="totalFiles">0</span></div>
+                    <div><i class="fas fa-cloud-download-alt"></i> 总下载量: <span id="totalDownloads">0</span></div>
                 </div>
             </div>
         </div>
         
         <div class="refresh-info">
-            <p>页面每 <span class="highlight">3小时</span> 自动刷新一次以获取最新文件</p>
+            <p><i class="fas fa-sync-alt"></i> 页面每 <span class="highlight">3小时</span> 自动刷新一次以获取最新资源</p>
             <p>下次刷新时间: <span id="nextRefresh"></span></p>
         </div>
         
         <div class="footer" id="secretFooter">
-            <p>© 2023 跨网络文件共享平台 | 完全免费 | 国内可用</p>
-            <p>温馨提示：所有文件均来自用户分享，请遵守相关法律法规</p>
-            <p style="font-size:0.8rem; margin-top:10px;">提示：点击此处区域20次可激活管理员面板</p>
+            <p>© 2023 资源分享库 | 完全免费 | 国内可用</p>
+            <p>温馨提示：所有资源均来自用户分享，请遵守相关法律法规</p>
         </div>
     </div>
 
     <script>
-        // 使用您提供的JSON文件URL
-        const JSON_FILE_URL = 'https://raw.githubusercontent.com/tong-rog/file-share/refs/heads/main/files.json';
+        const JSON_FILE_PATH = 'files.json';
         const ADMIN_PASSWORD = "admin123";
         let clickCount = 0;
         
         document.addEventListener('DOMContentLoaded', function() {
-            // 显示JSON文件URL
-            document.getElementById('jsonUrlDisplay').textContent = JSON_FILE_URL;
-            
-            // 加载文件列表
+            document.getElementById('jsonPath').textContent = JSON_FILE_PATH;
             loadFileList();
-            
-            // 设置自动刷新
             setupAutoRefresh();
-            
-            // 初始化管理员面板
             initAdminPanel();
-            
-            // 设置隐藏区域点击事件
             setupSecretArea();
         });
 
-        // 从GitHub加载文件列表
         async function loadFileList() {
             try {
-                // 添加时间戳参数避免缓存
-                const response = await fetch(`${JSON_FILE_URL}?t=${Date.now()}`);
+                const response = await fetch(`${JSON_FILE_PATH}?t=${new Date().getTime()}`);
                 if (!response.ok) {
-                    throw new Error('无法加载文件列表');
+                    throw new Error('无法加载资源列表');
                 }
                 
                 const fileData = await response.json();
                 renderFileList(fileData);
                 updateStats(fileData);
             } catch (error) {
-                console.error('加载文件列表失败:', error);
+                console.error('加载资源列表失败:', error);
                 document.getElementById('fileList').innerHTML = `
                     <div class="file-item">
-                        <div class="file-icon">⚠️</div>
+                        <div class="file-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
                         <div class="file-details">
-                            <div class="file-name">加载文件列表失败</div>
+                            <div class="file-name">加载资源列表失败</div>
                             <div class="file-info">${error.message}</div>
                         </div>
                     </div>
@@ -651,7 +676,6 @@
             }
         }
 
-        // 渲染文件列表
         function renderFileList(fileData) {
             const fileList = document.getElementById('fileList');
             fileList.innerHTML = '';
@@ -659,10 +683,12 @@
             if (fileData.length === 0) {
                 fileList.innerHTML = `
                     <div class="file-item">
-                        <div class="file-icon">📁</div>
+                        <div class="file-icon">
+                            <i class="fas fa-folder-open"></i>
+                        </div>
                         <div class="file-details">
-                            <div class="file-name">暂无文件</div>
-                            <div class="file-info">请管理员添加文件</div>
+                            <div class="file-name">暂无资源</div>
+                            <div class="file-info">请管理员添加资源</div>
                         </div>
                     </div>
                 `;
@@ -673,148 +699,167 @@
                 const fileItem = document.createElement('div');
                 fileItem.className = 'file-item';
                 
-                // 根据文件类型设置图标
-                let fileIcon = '📄';
-                if (file.type === 'pdf') fileIcon = '📝';
-                else if (file.type === 'docx' || file.type === 'doc') fileIcon = '📄';
-                else if (file.type === 'xlsx' || file.type === 'xls') fileIcon = '📊';
-                else if (file.type === 'pptx' || file.type === 'ppt') fileIcon = '📑';
-                else if (file.type === 'mp4' || file.type === 'avi') fileIcon = '🎬';
-                else if (file.type === 'mp3' || file.type === 'wav') fileIcon = '🎵';
-                else if (file.type === 'zip' || file.type === 'rar') fileIcon = '📦';
+                let fileIcon = 'file';
+                if (file.type === 'pdf') fileIcon = 'file-pdf';
+                else if (file.type === 'docx' || file.type === 'doc') fileIcon = 'file-word';
+                else if (file.type === 'xlsx' || file.type === 'xls') fileIcon = 'file-excel';
+                else if (file.type === 'pptx' || file.type === 'ppt') fileIcon = 'file-powerpoint';
+                else if (file.type === 'mp4' || file.type === 'avi') fileIcon = 'file-video';
+                else if (file.type === 'mp3' || file.type === 'wav') fileIcon = 'file-audio';
+                else if (file.type === 'zip' || file.type === 'rar') fileIcon = 'file-archive';
+                else if (file.type === 'magnet') fileIcon = 'magnet';
+                else if (file.type === 'url') fileIcon = 'link';
+                
+                const isMagnet = file.link && file.link.startsWith('magnet:');
+                const isUrl = file.link && !isMagnet;
                 
                 fileItem.innerHTML = `
-                    <div class="file-icon">${fileIcon}</div>
+                    <div class="file-icon">
+                        <i class="fa${isMagnet ? 's' : 'r'} fa-${fileIcon}"></i>
+                    </div>
                     <div class="file-details">
                         <div class="file-name">${file.name}</div>
                         <div class="file-description">${file.description || '无描述'}</div>
                         <div class="file-info">
-                            <span>${file.cloud}</span>
-                            <span class="file-size">${file.size}</span>
+                            <span class="file-size">${file.size || '未知大小'}</span>
+                            <span class="file-type">${file.type || '资源'}</span>
+                            ${file.cloud ? `<span>${file.cloud}</span>` : ''}
                         </div>
+                        ${file.link ? `<div class="link-box" id="link-${file.id}">${file.link}</div>` : ''}
+                        ${file.link ? `<div class="link-toggle" onclick="toggleLink('${file.id}')">显示链接</div>` : ''}
                     </div>
                     <div class="file-actions">
-                        <button class="btn download-btn" onclick="downloadFile(${file.id})">下载</button>
-                        <button class="btn cloud-btn" onclick="openCloudLink('${file.link}', '${file.code}')">云盘</button>
+                        ${file.link ? `
+                            <button class="btn copy-btn" onclick="copyToClipboard('${file.id}', '${file.link}')">
+                                <i class="fas fa-copy"></i> ${isMagnet ? '磁力链' : '复制链接'}
+                            </button>
+                        ` : ''}
+                        ${file.cloudLink ? `
+                            <button class="btn cloud-btn" onclick="openCloudLink('${file.cloudLink}', '${file.code}')">
+                                <i class="fas fa-cloud"></i> 云盘
+                            </button>
+                        ` : ''}
+                        ${file.directLink ? `
+                            <button class="btn download-btn" onclick="window.open('${file.directLink}', '_blank')">
+                                <i class="fas fa-download"></i> 下载
+                            </button>
+                        ` : ''}
                     </div>
                 `;
                 
                 fileList.appendChild(fileItem);
             });
         }
+        
+        function toggleLink(fileId) {
+            const linkBox = document.getElementById(`link-${fileId}`);
+            if (linkBox) {
+                linkBox.style.display = linkBox.style.display === 'none' ? 'block' : 'none';
+            }
+        }
 
-        // 打开云盘链接
         function openCloudLink(link, code) {
             if (code) {
-                if (confirm(`该文件需要提取码: ${code}\n是否跳转到云盘页面？`)) {
+                if (confirm(`该资源需要提取码: ${code}\n是否跳转到云盘页面？`)) {
                     window.open(link, '_blank');
                 }
             } else {
                 window.open(link, '_blank');
             }
         }
-
-        // 下载文件
-        function downloadFile(fileId) {
-            // 在实际应用中，这里会记录下载次数
-            alert(`开始下载文件 ID: ${fileId}\n由于是云盘链接，将跳转到下载页面`);
+        
+        function copyToClipboard(fileId, text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const notification = document.getElementById('copyNotification');
+                notification.style.display = 'block';
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 2000);
+            }).catch(err => {
+                console.error('复制失败:', err);
+                alert('复制失败，请手动复制链接');
+            });
+            
+            const linkBox = document.getElementById(`link-${fileId}`);
+            if (linkBox) {
+                linkBox.style.display = 'block';
+            }
         }
 
-        // 更新统计信息
         function updateStats(fileData) {
             document.getElementById('totalFiles').textContent = fileData.length;
-            
-            // 在实际应用中，这里会统计真实下载次数
             const totalDownloads = fileData.reduce((sum, file) => sum + (file.downloads || 0), 0);
             document.getElementById('totalDownloads').textContent = totalDownloads;
         }
 
-        // 设置自动刷新
         function setupAutoRefresh() {
-            // 3小时 = 3 * 60 * 60 * 1000 毫秒
             const refreshInterval = 3 * 60 * 60 * 1000;
-            
-            // 计算下次刷新时间
             const now = new Date();
             const nextRefresh = new Date(now.getTime() + refreshInterval);
-            
-            // 显示下次刷新时间
             document.getElementById('nextRefresh').textContent = 
                 nextRefresh.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            
-            // 设置定时刷新
             setTimeout(() => {
                 location.reload();
             }, refreshInterval);
         }
         
-        // 更新文件列表（管理员功能）
         function updateFileList() {
             const jsonInput = document.getElementById('jsonData').value;
             
             try {
-                // 验证JSON格式
                 const fileData = JSON.parse(jsonInput);
-                
-                // 更新UI
                 renderFileList(fileData);
                 updateStats(fileData);
-                
-                // 显示成功消息
-                document.getElementById('updateSuccess').style.display = 'block';
-                document.getElementById('updateError').style.display = 'none';
-                
-                // 5秒后隐藏消息
-                setTimeout(() => {
-                    document.getElementById('updateSuccess').style.display = 'none';
-                }, 5000);
+                alert('资源列表更新成功！');
             } catch (error) {
-                // 显示错误消息
-                document.getElementById('updateError').style.display = 'block';
-                document.getElementById('updateSuccess').style.display = 'none';
+                alert('JSON格式错误：' + error.message);
             }
         }
         
-        // 初始化管理员面板
         function initAdminPanel() {
-            // 尝试从GitHub加载当前文件数据
-            fetch(JSON_FILE_URL)
-                .then(response => response.json())
-                .then(data => {
-                    // 将JSON数据填充到文本区域
-                    document.getElementById('jsonData').value = JSON.stringify(data, null, 2);
-                })
-                .catch(error => {
-                    console.error('加载文件数据失败:', error);
-                    // 使用示例数据作为备选
-                    document.getElementById('jsonData').value = JSON.stringify([
-                        {
-                            "id": 1,
-                            "name": "示例文件",
-                            "description": "这是一个示例文件",
-                            "size": "10.5MB",
-                            "type": "pdf",
-                            "cloud": "百度网盘",
-                            "link": "https://pan.baidu.com/s/example",
-                            "code": "1234",
-                            "downloads": 0
-                        },
-                        {
-                            "id": 2,
-                            "name": "示例视频",
-                            "description": "这是一个示例视频文件",
-                            "size": "256MB",
-                            "type": "mp4",
-                            "cloud": "阿里云盘",
-                            "link": "https://www.aliyundrive.com/s/example",
-                            "code": "",
-                            "downloads": 0
-                        }
-                    ], null, 2);
-                });
+            document.getElementById('jsonData').value = JSON.stringify([
+                {
+                    "id": 1,
+                    "name": "高清电影资源",
+                    "description": "1080p高清电影",
+                    "size": "2.1GB",
+                    "type": "magnet",
+                    "link": "magnet:?xt=urn:btih:EXAMPLEHASH123456&dn=Example+Movie",
+                    "downloads": 142
+                },
+                {
+                    "id": 2,
+                    "name": "软件下载",
+                    "description": "实用工具软件",
+                    "size": "85MB",
+                    "type": "url",
+                    "link": "https://example.com/software.zip",
+                    "directLink": "https://example.com/software.zip",
+                    "downloads": 98
+                },
+                {
+                    "id": 3,
+                    "name": "学习资料",
+                    "description": "全套学习资料",
+                    "size": "1.5GB",
+                    "type": "zip",
+                    "cloud": "百度网盘",
+                    "cloudLink": "https://pan.baidu.com/s/example3",
+                    "code": "1234",
+                    "downloads": 76
+                },
+                {
+                    "id": 4,
+                    "name": "音乐专辑",
+                    "description": "经典音乐合集",
+                    "size": "320MB",
+                    "type": "mp3",
+                    "link": "https://example.com/music.torrent",
+                    "downloads": 56
+                }
+            ], null, 2);
         }
         
-        // 设置隐藏区域点击事件
         function setupSecretArea() {
             const secretFooter = document.getElementById('secretFooter');
             const secretIndicator = document.getElementById('secretIndicator');
@@ -823,38 +868,27 @@
             secretFooter.addEventListener('click', () => {
                 clickCount++;
                 clickCountSpan.textContent = clickCount;
-                
-                // 显示点击次数指示器
                 secretIndicator.style.display = 'block';
                 
-                // 达到20次点击
                 if (clickCount >= 20) {
-                    // 显示密码输入框
                     document.getElementById('passwordModal').classList.add('active');
-                    // 重置点击计数器
                     clickCount = 0;
                     clickCountSpan.textContent = clickCount;
-                    // 隐藏指示器
                     secretIndicator.style.display = 'none';
                 }
             });
         }
         
-        // 检查密码
         function checkPassword() {
             const passwordInput = document.getElementById('adminPassword');
             const message = document.getElementById('passwordMessage');
             
             if (passwordInput.value === ADMIN_PASSWORD) {
-                // 密码正确，显示管理员面板
                 document.getElementById('adminPanel').classList.add('active');
-                // 隐藏密码框
                 document.getElementById('passwordModal').classList.remove('active');
-                // 清空密码输入框
                 passwordInput.value = '';
                 message.textContent = '';
             } else {
-                // 密码错误
                 message.textContent = '密码错误，请重新输入！';
                 passwordInput.value = '';
                 passwordInput.focus();
