@@ -1,0 +1,24 @@
+[
+     {
+         "id": 1,
+         "name": "GitHub使用指南",
+         "description": "GitHub部署详细教程",
+         "size": "2.1MB",
+         "type": "pdf",
+         "cloud": "百度网盘",
+         "link": "https://pan.baidu.com/s/1example1",
+         "code": "abcd",
+         "downloads": 0
+     },
+     {
+         "id": 2,
+         "name": "前端开发教程",
+         "description": "HTML/CSS/JavaScript入门",
+         "size": "15.7MB",
+         "type": "pdf",
+         "cloud": "阿里云盘",
+         "link": "https://www.aliyundrive.com/s/example2",
+         "code": "",
+         "downloads": 0
+     }
+]

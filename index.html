@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>跨网络文件共享平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #2c3e50, #1a2a6c);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #fff;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .github-steps {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .github-steps h2 {
+            color: #4fc3f7;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .step {
+            display: flex;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        
+        .step-number {
+            min-width: 30px;
+            height: 30px;
+            background: #4fc3f7;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .step-content h3 {
+            color: #ffcc80;
+            margin-bottom: 5px;
+        }
+        
+        .content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+        
+        @media (min-width: 768px) {
+            .content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .panel {
+            background: rgba(20, 30, 48, 0.85);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease;
+        }
+        
+        .panel:hover {
+            transform: translateY(-5px);
+        }
+        
+        .panel h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #4fc3f7;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .announcement {
+            background: rgba(106, 27, 154, 0.8);
+        }
+        
+        .announcement h2 {
+            color: #e1bee7;
+        }
+        
+        .contact-info {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .contact-info h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: #ffcc80;
+        }
+        
+        .contact-methods {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .contact-method {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .contact-method:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+        
+        .qq-group {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffcc80;
+            margin: 10px 0;
+        }
+        
+        .file-list {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .file-list::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .file-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .file-list::-webkit-scrollbar-thumb {
+            background: #4fc3f7;
+            border-radius: 10px;
+        }
+        
+        .file-item {
+            background: rgba(30, 40, 58, 0.7);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .file-item:hover {
+            background: rgba(30, 40, 58, 1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .file-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(79, 195, 247, 0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.5rem;
+            color: #4fc3f7;
+        }
+        
+        .file-details {
+            flex: 1;
+        }
+        
+        .file-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+        
+        .file-info {
+            font-size: 0.9rem;
+            color: #b0bec5;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .file-size {
+            color: #81c784;
+        }
+        
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .download-btn {
+            background: linear-gradient(45deg, #00c853, #64dd17);
+            color: white;
+        }
+        
+        .download-btn:hover {
+            background: linear-gradient(45deg, #009624, #4caf50);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 200, 83, 0.4);
+        }
+        
+        .cloud-btn {
+            background: linear-gradient(45deg, #2962ff, #448aff);
+            color: white;
+        }
+        
+        .cloud-btn:hover {
+            background: linear-gradient(45deg, #0039cb, #2962ff);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(41, 98, 255, 0.4);
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: #b0bec5;
+        }
+        
+        .refresh-info {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            color: #e0e0e0;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            color: #b0bec5;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .highlight {
+            color: #ffcc80;
+            font-weight: bold;
+        }
+        
+        .upload-instructions {
+            background: rgba(255, 152, 0, 0.15);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #ff9800;
+        }
+        
+        .admin-panel {
+            background: rgba(198, 40, 40, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .admin-panel.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .admin-panel h3 {
+            color: #ffab91;
+            margin-bottom: 15px;
+        }
+        
+        .json-editor {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .json-textarea {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+            border: 1px solid #ff9800;
+            font-family: monospace;
+        }
+        
+        .json-btn {
+            background: linear-gradient(45deg, #ff5722, #ff9800);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .json-btn:hover {
+            background: linear-gradient(45deg, #e64a19, #f57c00);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 87, 34, 0.4);
+        }
+        
+        .admin-instructions {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .system-message {
+            text-align: center;
+            padding: 15px;
+            background: rgba(0, 150, 136, 0.2);
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #009688;
+        }
+        
+        .password-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .password-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .password-box {
+            background: #1e2a3a;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+        
+        .password-box h3 {
+            color: #4fc3f7;
+            margin-bottom: 20px;
+        }
+        
+        .password-input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 2px solid #4fc3f7;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(45deg, #2962ff, #448aff);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .submit-btn:hover {
+            background: linear-gradient(45deg, #0039cb, #2962ff);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(41, 98, 255, 0.4);
+        }
+        
+        .message {
+            margin-top: 15px;
+            color: #ff5252;
+            font-size: 0.9rem;
+            min-height: 20px;
+        }
+        
+        .secret-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #ffcc80;
+            display: none;
+        }
+        
+        .update-status {
+            text-align: center;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: none;
+        }
+        
+        .update-success {
+            background: rgba(46, 204, 113, 0.2);
+            border-left: 4px solid #2ecc71;
+        }
+        
+        .update-error {
+            background: rgba(231, 76, 60, 0.2);
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .github-icon {
+            vertical-align: middle;
+            margin-right: 10px;
+            width: 30px;
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="secret-indicator" id="secretIndicator">点击次数: <span id="clickCount">0</span>/20</div>
+    
+    <div class="password-modal" id="passwordModal">
+        <div class="password-box">
+            <h3>管理员验证</h3>
+            <input type="password" class="password-input" id="adminPassword" placeholder="请输入管理员密码">
+            <button class="submit-btn" onclick="checkPassword()">验证</button>
+            <div class="message" id="passwordMessage"></div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <header>
+            <h1>跨网络文件共享平台</h1>
+            <p>管理员上传文件，所有用户均可免费下载</p>
+        </header>
+        
+        <div class="github-steps">
+            <h2>GitHub部署指南</h2>
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>创建GitHub仓库</h3>
+                    <p>登录GitHub → 点击右上角"+" → 选择"New repository" → 填写仓库名称 → 点击"Create repository"</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>上传文件</h3>
+                    <p>在仓库页面点击"Add file" → 选择"Upload files" → 上传index.html和files.json</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>启用GitHub Pages</h3>
+                    <p>仓库设置 → "Pages" → 选择main分支和根目录 → 保存</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>获取文件URL</h3>
+                    <p>点击files.json → 点击"Raw" → 复制浏览器地址栏URL → 替换下方代码中的JSON_FILE_URL</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                    <h3>分享链接</h3>
+                    <p>GitHub Pages提供的链接格式为：https://&lt;username&gt;.github.io/&lt;repository&gt;</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="system-message">
+            <p>当管理员更新文件后，所有用户都能实时看到最新内容</p>
+        </div>
+        
+        <div class="content">
+            <div class="panel announcement">
+                <h2>公告栏</h2>
+                
+                <div class="upload-instructions">
+                    <h4>文件上传说明</h4>
+                    <p>如需上传文件，请将以下信息通过QQ群发送给管理员：</p>
+                    <ul>
+                        <li>文件名</li>
+                        <li>文件描述（可选）</li>
+                        <li>云盘下载链接</li>
+                        <li>提取码（如果有）</li>
+                    </ul>
+                    <p>管理员会尽快审核并添加到文件列表中！</p>
+                </div>
+                
+                <div class="contact-info">
+                    <h3>官方QQ群</h3>
+                    <div class="contact-methods">
+                        <div class="contact-method">
+                            <div class="qq-group">964170677</div>
+                            <p>加入QQ群联系管理员</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="admin-panel" id="adminPanel">
+                    <h3>管理员更新面板</h3>
+                    <div class="json-editor">
+                        <textarea id="jsonData" class="json-textarea" placeholder="在此粘贴JSON格式的文件数据..."></textarea>
+                        <button class="json-btn" onclick="updateFileList()">更新文件列表</button>
+                    </div>
+                    <div class="admin-instructions">
+                        <p><strong>使用说明：</strong> 获取JSON文件内容后粘贴到上方文本框，点击"更新文件列表"按钮即可。</p>
+                        <p>JSON文件路径: <span id="jsonPath">https://raw.githubusercontent.com/username/repository/main/files.json</span></p>
+                        <p class="update-status update-success" id="updateSuccess">文件更新成功！所有用户将立即看到最新内容</p>
+                        <p class="update-status update-error" id="updateError">更新失败，请检查JSON格式</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <h2>文件下载区</h2>
+                <div class="file-list" id="fileList">
+                    <div class="file-item">
+                        <div class="file-icon">⏳</div>
+                        <div class="file-details">
+                            <div class="file-name">正在加载文件列表...</div>
+                            <div class="file-info">请稍候</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stats">
+                    <div>总文件数: <span id="totalFiles">0</span></div>
+                    <div>总下载量: <span id="totalDownloads">0</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="refresh-info">
+            <p>页面每 <span class="highlight">3小时</span> 自动刷新一次以获取最新文件</p>
+            <p>下次刷新时间: <span id="nextRefresh"></span></p>
+        </div>
+        
+        <div class="footer" id="secretFooter">
+            <p>© 2023 跨网络文件共享平台 | 完全免费 | 国内可用</p>
+            <p>温馨提示：所有文件均来自用户分享，请遵守相关法律法规</p>
+        </div>
+    </div>
+
+    <script>
+        const JSON_FILE_URL = 'https://raw.githubusercontent.com/username/repository/main/files.json';
+        const ADMIN_PASSWORD = "admin123";
+        let clickCount = 0;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('jsonPath').textContent = JSON_FILE_URL;
+            loadFileList();
+            setupAutoRefresh();
+            initAdminPanel();
+            setupSecretArea();
+        });
+
+        async function loadFileList() {
+            try {
+                const response = await fetch(`${JSON_FILE_URL}?t=${Date.now()}`);
+                if (!response.ok) {
+                    throw new Error('无法加载文件列表');
+                }
+                
+                const fileData = await response.json();
+                renderFileList(fileData);
+                updateStats(fileData);
+            } catch (error) {
+                document.getElementById('fileList').innerHTML = `
+                    <div class="file-item">
+                        <div class="file-icon">⚠️</div>
+                        <div class="file-details">
+                            <div class="file-name">加载文件列表失败</div>
+                            <div class="file-info">${error.message}</div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function renderFileList(fileData) {
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = '';
+            
+            if (fileData.length === 0) {
+                fileList.innerHTML = `
+                    <div class="file-item">
+                        <div class="file-icon">📁</div>
+                        <div class="file-details">
+                            <div class="file-name">暂无文件</div>
+                            <div class="file-info">请管理员添加文件</div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            fileData.forEach(file => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                
+                let fileIcon = '📄';
+                if (file.type === 'pdf') fileIcon = '📝';
+                else if (file.type === 'docx' || file.type === 'doc') fileIcon = '📄';
+                else if (file.type === 'xlsx' || file.type === 'xls') fileIcon = '📊';
+                else if (file.type === 'pptx' || file.type === 'ppt') fileIcon = '📑';
+                else if (file.type === 'mp4' || file.type === 'avi') fileIcon = '🎬';
+                else if (file.type === 'mp3' || file.type === 'wav') fileIcon = '🎵';
+                else if (file.type === 'zip' || file.type === 'rar') fileIcon = '📦';
+                
+                fileItem.innerHTML = `
+                    <div class="file-icon">${fileIcon}</div>
+                    <div class="file-details">
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-description">${file.description || '无描述'}</div>
+                        <div class="file-info">
+                            <span>${file.cloud}</span>
+                            <span class="file-size">${file.size}</span>
+                        </div>
+                    </div>
+                    <div class="file-actions">
+                        <button class="btn download-btn" onclick="downloadFile(${file.id})">下载</button>
+                        <button class="btn cloud-btn" onclick="openCloudLink('${file.link}', '${file.code}')">云盘</button>
+                    </div>
+                `;
+                
+                fileList.appendChild(fileItem);
+            });
+        }
+
+        function openCloudLink(link, code) {
+            if (code) {
+                if (confirm(`该文件需要提取码: ${code}\n是否跳转到云盘页面？`)) {
+                    window.open(link, '_blank');
+                }
+            } else {
+                window.open(link, '_blank');
+            }
+        }
+
+        function downloadFile(fileId) {
+            alert(`开始下载文件 ID: ${fileId}\n由于是云盘链接，将跳转到下载页面`);
+        }
+
+        function updateStats(fileData) {
+            document.getElementById('totalFiles').textContent = fileData.length;
+            const totalDownloads = fileData.reduce((sum, file) => sum + (file.downloads || 0), 0);
+            document.getElementById('totalDownloads').textContent = totalDownloads;
+        }
+
+        function setupAutoRefresh() {
+            const refreshInterval = 3 * 60 * 60 * 1000;
+            const now = new Date();
+            const nextRefresh = new Date(now.getTime() + refreshInterval);
+            document.getElementById('nextRefresh').textContent = 
+                nextRefresh.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            setTimeout(() => {
+                location.reload();
+            }, refreshInterval);
+        }
+        
+        function updateFileList() {
+            const jsonInput = document.getElementById('jsonData').value;
+            
+            try {
+                const fileData = JSON.parse(jsonInput);
+                renderFileList(fileData);
+                updateStats(fileData);
+                
+                document.getElementById('updateSuccess').style.display = 'block';
+                document.getElementById('updateError').style.display = 'none';
+                
+                setTimeout(() => {
+                    document.getElementById('updateSuccess').style.display = 'none';
+                }, 5000);
+            } catch (error) {
+                document.getElementById('updateError').style.display = 'block';
+                document.getElementById('updateSuccess').style.display = 'none';
+            }
+        }
+        
+        function initAdminPanel() {
+            fetch(JSON_FILE_URL)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('jsonData').value = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    document.getElementById('jsonData').value = JSON.stringify([
+                        {
+                            "id": 1,
+                            "name": "GitHub使用指南",
+                            "description": "GitHub部署详细教程",
+                            "size": "2.1MB",
+                            "type": "pdf",
+                            "cloud": "百度网盘",
+                            "link": "https://pan.baidu.com/s/1example1",
+                            "code": "abcd",
+                            "downloads": 0
+                        },
+                        {
+                            "id": 2,
+                            "name": "前端开发教程",
+                            "description": "HTML/CSS/JavaScript入门",
+                            "size": "15.7MB",
+                            "type": "pdf",
+                            "cloud": "阿里云盘",
+                            "link": "https://www.aliyundrive.com/s/example2",
+                            "code": "",
+                            "downloads": 0
+                        }
+                    ], null, 2);
+                });
+        }
+        
+        function setupSecretArea() {
+            const secretFooter = document.getElementById('secretFooter');
+            const secretIndicator = document.getElementById('secretIndicator');
+            const clickCountSpan = document.getElementById('clickCount');
+            
+            secretFooter.addEventListener('click', () => {
+                clickCount++;
+                clickCountSpan.textContent = clickCount;
+                secretIndicator.style.display = 'block';
+                
+                if (clickCount >= 20) {
+                    document.getElementById('passwordModal').classList.add('active');
+                    clickCount = 0;
+                    clickCountSpan.textContent = clickCount;
+                    secretIndicator.style.display = 'none';
+                }
+            });
+        }
+        
+        function checkPassword() {
+            const passwordInput = document.getElementById('adminPassword');
+            const message = document.getElementById('passwordMessage');
+            
+            if (passwordInput.value === ADMIN_PASSWORD) {
+                document.getElementById('adminPanel').classList.add('active');
+                document.getElementById('passwordModal').classList.remove('active');
+                passwordInput.value = '';
+                message.textContent = '';
+            } else {
+                message.textContent = '密码错误，请重新输入！';
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        }
+    </script>
+</body>
+</html>
