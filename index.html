@@ -6,539 +6,11 @@
     <title>资源分享库</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #1a2a6c, #2c3e50, #1a2a6c);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            color: #fff;
-            line-height: 1.6;
-            min-height: 100vh;
-            padding: 20px;
-            position: relative;
-        }
-        
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        header {
-            text-align: center;
-            padding: 30px 0;
-            margin-bottom: 30px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            position: relative;
-        }
-        
-        header h1 {
-            font-size: 2.8rem;
-            margin-bottom: 10px;
-            color: #fff;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-        }
-        
-        .content {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 25px;
-        }
-        
-        @media (min-width: 768px) {
-            .content {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-        
-        .panel {
-            background: rgba(20, 30, 48, 0.85);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-            transition: transform 0.3s ease;
-        }
-        
-        .panel:hover {
-            transform: translateY(-5px);
-        }
-        
-        .panel h2 {
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            color: #4fc3f7;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .panel h2 i {
-            color: #29b6f6;
-        }
-        
-        .announcement {
-            background: rgba(106, 27, 154, 0.8);
-        }
-        
-        .announcement h2 {
-            color: #e1bee7;
-        }
-        
-        .contact-info {
-            margin-top: 25px;
-            padding-top: 25px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .contact-info h3 {
-            font-size: 1.4rem;
-            margin-bottom: 15px;
-            color: #ffcc80;
-        }
-        
-        .contact-methods {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 15px;
-        }
-        
-        .contact-method {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            transition: all 0.3s ease;
-            width: 100%;
-            max-width: 300px;
-        }
-        
-        .contact-method:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.05);
-        }
-        
-        .contact-method i {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            color: #4fc3f7;
-        }
-        
-        .qq-group {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #ffcc80;
-            margin: 10px 0;
-        }
-        
-        .file-list {
-            max-height: 500px;
-            overflow-y: auto;
-            padding-right: 10px;
-        }
-        
-        .file-list::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        .file-list::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-        }
-        
-        .file-list::-webkit-scrollbar-thumb {
-            background: #4fc3f7;
-            border-radius: 10px;
-        }
-        
-        .file-item {
-            background: rgba(30, 40, 58, 0.7);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-        
-        .file-item:hover {
-            background: rgba(30, 40, 58, 1);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-        
-        .file-icon {
-            width: 50px;
-            height: 50px;
-            background: rgba(79, 195, 247, 0.2);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            font-size: 1.5rem;
-            color: #4fc3f7;
-        }
-        
-        .file-details {
-            flex: 1;
-        }
-        
-        .file-name {
-            font-weight: bold;
-            font-size: 1.1rem;
-            margin-bottom: 5px;
-            color: #fff;
-        }
-        
-        .file-info {
-            font-size: 0.9rem;
-            color: #b0bec5;
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .file-size {
-            color: #81c784;
-        }
-        
-        .file-type {
-            color: #ff9e7d;
-        }
-        
-        .file-actions {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .btn {
-            padding: 8px 15px;
-            border-radius: 8px;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-        }
-        
-        .download-btn {
-            background: linear-gradient(45deg, #00c853, #64dd17);
-            color: white;
-        }
-        
-        .download-btn:hover {
-            background: linear-gradient(45deg, #009624, #4caf50);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 200, 83, 0.4);
-        }
-        
-        .cloud-btn {
-            background: linear-gradient(45deg, #2962ff, #448aff);
-            color: white;
-        }
-        
-        .cloud-btn:hover {
-            background: linear-gradient(45deg, #0039cb, #2962ff);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(41, 98, 255, 0.4);
-        }
-        
-        .magnet-btn {
-            background: linear-gradient(45deg, #ff5722, #ff9800);
-            color: white;
-        }
-        
-        .magnet-btn:hover {
-            background: linear-gradient(45deg, #e64a19, #f57c00);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(255, 87, 34, 0.4);
-        }
-        
-        .copy-btn {
-            background: linear-gradient(45deg, #9c27b0, #e040fb);
-            color: white;
-        }
-        
-        .copy-btn:hover {
-            background: linear-gradient(45deg, #7b1fa2, #d500f9);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(156, 39, 176, 0.4);
-        }
-        
-        .stats {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 0.9rem;
-            color: #b0bec5;
-        }
-        
-        .refresh-info {
-            text-align: center;
-            margin-top: 30px;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            font-size: 0.9rem;
-            color: #e0e0e0;
-        }
-        
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            color: #b0bec5;
-            font-size: 0.9rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            cursor: pointer;
-            position: relative;
-        }
-        
-        .highlight {
-            color: #ffcc80;
-            font-weight: bold;
-        }
-        
-        .upload-instructions {
-            background: rgba(255, 152, 0, 0.15);
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 20px;
-            border-left: 4px solid #ff9800;
-        }
-        
-        .upload-instructions h4 {
-            color: #ffcc80;
-            margin-bottom: 10px;
-        }
-        
-        .admin-panel {
-            background: rgba(198, 40, 40, 0.2);
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-            display: none;
-        }
-        
-        .admin-panel.active {
-            display: block;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .admin-panel h3 {
-            color: #ffab91;
-            margin-bottom: 15px;
-        }
-        
-        .json-editor {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .json-textarea {
-            width: 100%;
-            height: 200px;
-            padding: 15px;
-            border-radius: 10px;
-            background: rgba(0, 0, 0, 0.2);
-            color: white;
-            border: 1px solid #ff9800;
-            font-family: monospace;
-        }
-        
-        .json-btn {
-            background: linear-gradient(45deg, #ff5722, #ff9800);
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-        
-        .json-btn:hover {
-            background: linear-gradient(45deg, #e64a19, #f57c00);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(255, 87, 34, 0.4);
-        }
-        
-        .admin-instructions {
-            margin-top: 15px;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            font-size: 0.9rem;
-        }
-        
-        .system-message {
-            text-align: center;
-            padding: 15px;
-            background: rgba(0, 150, 136, 0.2);
-            border-radius: 10px;
-            margin: 20px 0;
-            border-left: 4px solid #009688;
-        }
-        
-        .password-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-        
-        .password-modal.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-        
-        .password-box {
-            background: #1e2a3a;
-            padding: 30px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            text-align: center;
-        }
-        
-        .password-box h3 {
-            color: #4fc3f7;
-            margin-bottom: 20px;
-        }
-        
-        .password-input {
-            width: 100%;
-            padding: 12px 15px;
-            border-radius: 8px;
-            border: 2px solid #4fc3f7;
-            background: rgba(0, 0, 0, 0.3);
-            color: white;
-            font-size: 1rem;
-            margin-bottom: 20px;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        
-        .password-input:focus {
-            border-color: #ff9800;
-        }
-        
-        .submit-btn {
-            background: linear-gradient(45deg, #2962ff, #448aff);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .submit-btn:hover {
-            background: linear-gradient(45deg, #0039cb, #2962ff);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(41, 98, 255, 0.4);
-        }
-        
-        .message {
-            margin-top: 15px;
-            color: #ff5252;
-            font-size: 0.9rem;
-            min-height: 20px;
-        }
-        
-        .secret-indicator {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            color: #ffcc80;
-            display: none;
-        }
-        
-        .link-box {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            padding: 10px;
-            margin: 10px 0;
-            font-size: 0.9rem;
-            word-break: break-all;
-            display: none;
-        }
-        
-        .copy-notification {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(46, 204, 113, 0.9);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-weight: bold;
-            z-index: 1000;
-            display: none;
-            animation: fadeInOut 2s ease-in-out;
-        }
-        
-        @keyframes fadeInOut {
-            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
-            20% { opacity: 1; transform: translateX(-50%) translateY(0); }
-            80% { opacity: 1; transform: translateX(-50%) translateY(0); }
-            100% { opacity: 0; transform: translateX(-50%) translateY(20px); }
-        }
-        
-        .link-toggle {
-            color: #4fc3f7;
-            cursor: pointer;
-            font-size: 0.85rem;
-            margin-top: 5px;
-            display: inline-block;
-        }
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}body{background:linear-gradient(135deg,#1a2a6c,#2c3e50,#1a2a6c);background-size:400% 400%;animation:gradientBG 15s ease infinite;color:#fff;line-height:1.6;min-height:100vh;padding:20px;position:relative}@keyframes gradientBG{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}.container{max-width:1200px;margin:0 auto;padding:20px;position:relative;z-index:1}header{text-align:center;padding:30px 0;margin-bottom:30px;background:rgba(0,0,0,0.3);border-radius:15px;box-shadow:0 10px 30px rgba(0,0,0,0.3);position:relative}header h1{font-size:2.8rem;margin-bottom:10px;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,0.5)}.content{display:grid;grid-template-columns:1fr;gap:25px}@media (min-width:768px){.content{grid-template-columns:1fr 1fr}}.panel{background:rgba(20,30,48,0.85);border-radius:15px;padding:25px;box-shadow:0 8px 25px rgba(0,0,0,0.4);transition:transform 0.3s ease}.panel:hover{transform:translateY(-5px)}.panel h2{font-size:1.8rem;margin-bottom:20px;color:#4fc3f7;display:flex;align-items:center;gap:10px}.panel h2 i{color:#29b6f6}.announcement{background:rgba(106,27,154,0.8)}.announcement h2{color:#e1bee7}.contact-info{margin-top:25px;padding-top:25px;border-top:1px solid rgba(255,255,255,0.1)}.contact-info h3{font-size:1.4rem;margin-bottom:15px;color:#ffcc80}.contact-methods{display:flex;justify-content:center;gap:15px;margin-top:15px}.contact-method{background:rgba(255,255,255,0.1);padding:20px;border-radius:10px;text-align:center;transition:all 0.3s ease;width:100%;max-width:300px}.contact-method:hover{background:rgba(255,255,255,0.2);transform:scale(1.05)}.contact-method i{font-size:2.5rem;margin-bottom:15px;color:#4fc3f7}.qq-group{font-size:1.5rem;font-weight:bold;color:#ffcc80;margin:10px 0}.file-list{max-height:500px;overflow-y:auto;padding-right:10px}.file-list::-webkit-scrollbar{width:8px}.file-list::-webkit-scrollbar-track{background:rgba(255,255,255,0.1);border-radius:10px}.file-list::-webkit-scrollbar-thumb{background:#4fc3f7;border-radius:10px}.file-item{background:rgba(30,40,58,0.7);border-radius:10px;padding:15px;margin-bottom:15px;display:flex;align-items:center;transition:all 0.3s ease;position:relative}.file-item:hover{background:rgba(30,40,58,1);box-shadow:0 5px 15px rgba(0,0,0,0.3)}.file-icon{width:50px;height:50px;background:rgba(79,195,247,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-right:15px;font-size:1.5rem;color:#4fc3f7}.file-details{flex:1}.file-name{font-weight:bold;font-size:1.1rem;margin-bottom:5px;color:#fff}.file-info{font-size:0.9rem;color:#b0bec5;display:flex;gap:15px;flex-wrap:wrap}.file-size{color:#81c784}.file-type{color:#ff9e7d}.file-actions{display:flex;gap:10px}.btn{padding:8px 15px;border-radius:8px;border:none;font-weight:bold;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.3s ease}.download-btn{background:linear-gradient(45deg,#00c853,#64dd17);color:white}.download-btn:hover{background:linear-gradient(45deg,#009624,#4caf50);transform:translateY(-3px);box-shadow:0 5px 15px rgba(0,200,83,0.4)}.cloud-btn{background:linear-gradient(45deg,#2962ff,#448aff);color:white}.cloud-btn:hover{background:linear-gradient(45deg,#0039cb,#2962ff);transform:translateY(-3px);box-shadow:0 5px 15px rgba(41,98,255,0.4)}.magnet-btn{background:linear-gradient(45deg,#ff5722,#ff9800);color:white}.magnet-btn:hover{background:linear-gradient(45deg,#e64a19,#f57c00);transform:translateY(-3px);box-shadow:0 5px 15px rgba(255,87,34,0.4)}.copy-btn{background:linear-gradient(45deg,#9c27b0,#e040fb);color:white}.copy-btn:hover{background:linear-gradient(45deg,#7b1fa2,#d500f9);transform:translateY(-3px);box-shadow:0 5px 15px rgba(156,39,176,0.4)}.stats{display:flex;justify-content:space-between;margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.1);font-size:0.9rem;color:#b0bec5}.refresh-info{text-align:center;margin-top:30px;padding:15px;background:rgba(0,0,0,0.2);border-radius:10px;font-size:0.9rem;color:#e0e0e0}.footer{text-align:center;margin-top:40px;padding-top:20px;color:#b0bec5;font-size:0.9rem;border-top:1px solid rgba(255,255,255,0.1);cursor:pointer;position:relative}.highlight{color:#ffcc80;font-weight:bold}.upload-instructions{background:rgba(255,152,0,0.15);padding:15px;border-radius:10px;margin-top:20px;border-left:4px solid #ff9800}.upload-instructions h4{color:#ffcc80;margin-bottom:10px}.admin-panel{background:rgba(198,40,40,0.2);padding:20px;border-radius:10px;margin-top:20px;display:none}.admin-panel.active{display:block;animation:fadeIn 0.5s ease-in-out}@keyframes fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}.admin-panel h3{color:#ffab91;margin-bottom:15px}.json-editor{display:flex;flex-direction:column;gap:15px}.json-textarea{width:100%;height:200px;padding:15px;border-radius:10px;background:rgba(0,0,0,0.2);color:white;border:1px solid #ff9800;font-family:monospace}.json-btn{background:linear-gradient(45deg,#ff5722,#ff9800);color:white;padding:10px 20px;border:none;border-radius:8px;cursor:pointer;font-weight:bold;transition:all 0.3s ease}.json-btn:hover{background:linear-gradient(45deg,#e64a19,#f57c00);transform:translateY(-3px);box-shadow:0 5px 15px rgba(255,87,34,0.4)}.admin-instructions{margin-top:15px;padding:10px;background:rgba(0,0,0,0.1);border-radius:8px;font-size:0.9rem}.system-message{text-align:center;padding:15px;background:rgba(0,150,136,0.2);border-radius:10px;margin:20px 0;border-left:4px solid #009688}.password-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;justify-content:center;align-items:center;z-index:1000;opacity:0;pointer-events:none;transition:opacity 0.3s ease}.password-modal.active{opacity:1;pointer-events:all}.password-box{background:#1e2a3a;padding:30px;border-radius:15px;width:90%;max-width:400px;box-shadow:0 10px 30px rgba(0,0,0,0.5);text-align:center}.password-box h3{color:#4fc3f7;margin-bottom:20px}.password-input{width:100%;padding:12px 15px;border-radius:8px;border:2px solid #4fc3f7;background:rgba(0,0,0,0.3);color:white;font-size:1rem;margin-bottom:20px;outline:none;transition:border-color 0.3s}.password-input:focus{border-color:#ff9800}.submit-btn{background:linear-gradient(45deg,#2962ff,#448aff);color:white;border:none;padding:12px 25px;border-radius:8px;font-size:1rem;font-weight:bold;cursor:pointer;transition:all 0.3s ease}.submit-btn:hover{background:linear-gradient(45deg,#0039cb,#2962ff);transform:translateY(-3px);box-shadow:0 5px 15px rgba(41,98,255,0.4)}.message{margin-top:15px;color:#ff5252;font-size:0.9rem;min-height:20px}.secret-indicator{position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.3);padding:5px 10px;border-radius:20px;font-size:0.8rem;color:#ffcc80;display:none}.link-box{background:rgba(255,255,255,0.1);border-radius:8px;padding:10px;margin:10px 0;font-size:0.9rem;word-break:break-all;display:none}.copy-notification{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(46,204,113,0.9);color:white;padding:10px 20px;border-radius:30px;font-weight:bold;z-index:1000;display:none;animation:fadeInOut 2s ease-in-out}@keyframes fadeInOut{0%{opacity:0;transform:translateX(-50%) translateY(20px)}20%{opacity:1;transform:translateX(-50%) translateY(0)}80%{opacity:1;transform:translateX(-50%) translateY(0)}100%{opacity:0;transform:translateX(-50%) translateY(20px)}}.link-toggle{color:#4fc3f7;cursor:pointer;font-size:0.85rem;margin-top:5px;display:inline-block}.search-area{background:rgba(0,0,0,0.2);padding:15px;border-radius:10px;margin-bottom:20px}.search-container{display:flex;gap:10px;margin-bottom:15px}.search-input{flex:1;padding:12px 15px;border-radius:8px;border:2px solid #4fc3f7;background:rgba(0,0,0,0.3);color:white;font-size:1rem;outline:none;transition:border-color 0.3s}.search-input:focus{border-color:#ff9800}.search-btn{background:linear-gradient(45deg,#2962ff,#448aff);color:white;border:none;padding:0 25px;border-radius:8px;font-weight:bold;cursor:pointer;transition:all 0.3s ease}.search-btn:hover{background:linear-gradient(45deg,#0039cb,#2962ff);transform:translateY(-3px);box-shadow:0 5px 15px rgba(41,98,255,0.4)}.category-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}.category-tab{padding:8px 15px;border-radius:20px;background:rgba(255,255,255,0.1);cursor:pointer;transition:all 0.3s ease;font-size:0.9rem}.category-tab.active{background:linear-gradient(45deg,#ff5722,#ff9800);font-weight:bold}.category-tab:hover:not(.active){background:rgba(255,255,255,0.2)}.reset-btn{background:rgba(255,255,255,0.1);color:#ffcc80;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;font-size:0.85rem;transition:all 0.3s ease}.reset-btn:hover{background:rgba(255,255,255,0.2)}.secret-trigger{position:absolute;top:15px;left:15px;width:20px;height:20px;background:rgba(255,255,255,0.05);border-radius:50%;cursor:pointer;z-index:10}.secret-trigger:hover{background:rgba(255,255,255,0.1)}.form-group{margin-bottom:15px}.form-group label{display:block;margin-bottom:5px;color:#ffcc80}.form-input{width:100%;padding:10px;border-radius:8px;border:1px solid #4fc3f7;background:rgba(0,0,0,0.3);color:white;font-size:1rem}.form-row{display:flex;gap:15px;margin-bottom:15px}.form-row .form-group{flex:1}.admin-tabs{display:flex;margin-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.2)}.admin-tab{padding:10px 20px;cursor:pointer;transition:all 0.3s ease}.admin-tab.active{background:rgba(255,152,0,0.2);border-bottom:3px solid #ff9800;font-weight:bold}.admin-section{display:none}.admin-section.active{display:block}.admin-controls{display:flex;gap:10px;margin-top:15px}.form-submit-btn{background:linear-gradient(45deg,#00c853,#64dd17);color:white;border:none;padding:10px 20px;border-radius:8px;font-weight:bold;cursor:pointer;transition:all 0.3s ease}.form-submit-btn:hover{background:linear-gradient(45deg,#009624,#4caf50);transform:translateY(-3px);box-shadow:0 5px 15px rgba(0,200,83,0.4)}.json-display{width:100%;height:200px;padding:15px;border-radius:10px;background:rgba(0,0,0,0.2);color:white;border:1px solid #4fc3f7;font-family:monospace;margin-top:15px;overflow:auto;white-space:pre}.code-box{background:rgba(0,0,0,0.3);border-radius:10px;padding:15px;margin-top:15px}.code-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.code-header h4{color:#ffcc80}.copy-code-btn{background:rgba(255,255,255,0.1);color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;transition:all 0.3s ease}.copy-code-btn:hover{background:rgba(255,255,255,0.2)}
     </style>
 </head>
 <body>
+    <div class="secret-trigger" id="secretTrigger"></div>
     <div class="secret-indicator" id="secretIndicator">点击次数: <span id="clickCount">0</span>/20</div>
     <div class="copy-notification" id="copyNotification">链接已复制到剪贴板！</div>
     
@@ -591,30 +63,132 @@
                 </div>
                 
                 <div class="admin-panel" id="adminPanel">
-                    <h3><i class="fas fa-user-shield"></i> 管理员更新面板</h3>
-                    <div class="json-editor">
-                        <textarea id="jsonData" class="json-textarea" placeholder="在此粘贴JSON格式的文件数据..."></textarea>
-                        <button class="json-btn" onclick="updateFileList()">
-                            <i class="fas fa-sync-alt"></i> 更新文件列表
-                        </button>
+                    <div class="admin-tabs">
+                        <div class="admin-tab active" onclick="switchAdminTab('form')">添加资源</div>
+                        <div class="admin-tab" onclick="switchAdminTab('json')">JSON编辑</div>
                     </div>
+                    
+                    <div class="admin-section active" id="formSection">
+                        <h3><i class="fas fa-plus-circle"></i> 添加新资源</h3>
+                        <div class="form-group">
+                            <label for="resourceName">资源名称 *</label>
+                            <input type="text" class="form-input" id="resourceName" placeholder="输入资源名称">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="resourceDesc">资源描述</label>
+                            <input type="text" class="form-input" id="resourceDesc" placeholder="输入资源描述">
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="resourceSize">文件大小</label>
+                                <input type="text" class="form-input" id="resourceSize" placeholder="例如: 2.1GB">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="resourceType">文件类型</label>
+                                <input type="text" class="form-input" id="resourceType" placeholder="例如: pdf, mp4">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="resourceLink">资源链接</label>
+                            <input type="text" class="form-input" id="resourceLink" placeholder="磁力链或网址">
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cloudName">云盘名称</label>
+                                <input type="text" class="form-input" id="cloudName" placeholder="例如: 百度网盘">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="cloudLink">云盘链接</label>
+                                <input type="text" class="form-input" id="cloudLink" placeholder="云盘分享链接">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="accessCode">提取码</label>
+                            <input type="text" class="form-input" id="accessCode" placeholder="云盘提取码">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="directLink">直接下载链接</label>
+                            <input type="text" class="form-input" id="directLink" placeholder="直链下载地址">
+                        </div>
+                        
+                        <div class="admin-controls">
+                            <button class="form-submit-btn" onclick="addResource()">
+                                <i class="fas fa-plus"></i> 添加资源
+                            </button>
+                            <button class="json-btn" onclick="generateJsonCode()">
+                                <i class="fas fa-code"></i> 生成JSON
+                            </button>
+                        </div>
+                        
+                        <div class="code-box">
+                            <div class="code-header">
+                                <h4>JSON代码（复制到files.json）</h4>
+                                <button class="copy-code-btn" onclick="copyJsonCode()">
+                                    <i class="fas fa-copy"></i> 复制
+                                </button>
+                            </div>
+                            <pre id="jsonCodeDisplay">添加资源后点击"生成JSON"按钮</pre>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-section" id="jsonSection">
+                        <h3><i class="fas fa-code"></i> JSON数据编辑</h3>
+                        <div class="json-editor">
+                            <textarea id="jsonData" class="json-textarea" placeholder="在此粘贴JSON格式的文件数据..."></textarea>
+                            <button class="json-btn" onclick="updateFileList()">
+                                <i class="fas fa-sync-alt"></i> 更新文件列表
+                            </button>
+                        </div>
+                    </div>
+                    
                     <div class="admin-instructions">
-                        <p><strong>使用说明：</strong> 获取JSON文件内容后粘贴到上方文本框，点击"更新文件列表"按钮即可。</p>
-                        <p>JSON文件路径: <span id="jsonPath">files.json</span></p>
+                        <p>添加资源后点击"生成JSON"按钮创建代码，复制到files.json文件</p>
                     </div>
                 </div>
             </div>
             
             <div class="panel">
                 <h2><i class="fas fa-file-download"></i> 资源下载区</h2>
+                
+                <div class="search-area">
+                    <div class="search-container">
+                        <input type="text" class="search-input" id="searchInput" placeholder="输入关键词搜索资源...">
+                        <button class="search-btn" onclick="searchFiles()">
+                            <i class="fas fa-search"></i> 搜索
+                        </button>
+                    </div>
+                    
+                    <div class="category-tabs">
+                        <div class="category-tab active" data-category="all" onclick="setCategory('all')">全部资源</div>
+                        <div class="category-tab" data-category="cloud" onclick="setCategory('cloud')">网盘资源</div>
+                        <div class="category-tab" data-category="magnet" onclick="setCategory('magnet')">磁力链接</div>
+                        <div class="category-tab" data-category="url" onclick="setCategory('url')">网址下载</div>
+                        <div class="category-tab" data-category="direct" onclick="setCategory('direct')">直接下载</div>
+                    </div>
+                    
+                    <div style="text-align: right;">
+                        <button class="reset-btn" onclick="resetSearch()">
+                            <i class="fas fa-redo"></i> 重置搜索
+                        </button>
+                    </div>
+                </div>
+                
                 <div class="file-list" id="fileList">
                     <div class="file-item">
                         <div class="file-icon">
-                            <i class="fas fa-spinner fa-spin"></i>
+                            <i class="fas fa-search"></i>
                         </div>
                         <div class="file-details">
-                            <div class="file-name">正在加载资源列表...</div>
-                            <div class="file-info">请稍候</div>
+                            <div class="file-name">搜索资源</div>
+                            <div class="file-info">请输入关键词并选择分类查看资源</div>
                         </div>
                     </div>
                 </div>
@@ -631,7 +205,7 @@
             <p>下次刷新时间: <span id="nextRefresh"></span></p>
         </div>
         
-        <div class="footer" id="secretFooter">
+        <div class="footer">
             <p>© 2025 资源分享库 | 完全免费 | 国内可用</p>
             <p>温馨提示：所有资源均来自用户分享，请遵守相关法律法规</p>
         </div>
@@ -641,9 +215,11 @@
         const JSON_FILE_PATH = 'files.json';
         const ADMIN_PASSWORD = "admin123";
         let clickCount = 0;
+        let currentFileData = [];
+        let currentCategory = 'all';
+        let currentSearchTerm = '';
         
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('jsonPath').textContent = JSON_FILE_PATH;
             loadFileList();
             setupAutoRefresh();
             initAdminPanel();
@@ -657,9 +233,8 @@
                     throw new Error('无法加载资源列表');
                 }
                 
-                const fileData = await response.json();
-                renderFileList(fileData);
-                updateStats(fileData);
+                currentFileData = await response.json();
+                updateStats(currentFileData);
             } catch (error) {
                 console.error('加载资源列表失败:', error);
                 document.getElementById('fileList').innerHTML = `
@@ -676,9 +251,60 @@
             }
         }
 
+        function searchFiles() {
+            const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+            currentSearchTerm = searchTerm;
+            renderFilteredFiles();
+        }
+
+        function setCategory(category) {
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.category === category);
+            });
+            
+            currentCategory = category;
+            renderFilteredFiles();
+        }
+
+        function resetSearch() {
+            document.getElementById('searchInput').value = '';
+            currentSearchTerm = '';
+            setCategory('all');
+            renderFilteredFiles();
+        }
+
+        function renderFilteredFiles() {
+            if (currentFileData.length === 0) return;
+            
+            let filteredFiles = currentFileData;
+            
+            if (currentCategory !== 'all') {
+                filteredFiles = filteredFiles.filter(file => {
+                    if (currentCategory === 'cloud') return file.cloudLink;
+                    if (currentCategory === 'magnet') return file.link && file.link.startsWith('magnet:');
+                    if (currentCategory === 'url') return file.link && !file.link.startsWith('magnet:');
+                    if (currentCategory === 'direct') return file.directLink;
+                    return true;
+                });
+            }
+            
+            if (currentSearchTerm) {
+                filteredFiles = filteredFiles.filter(file => {
+                    const name = file.name.toLowerCase();
+                    const desc = (file.description || '').toLowerCase();
+                    const type = (file.type || '').toLowerCase();
+                    
+                    return name.includes(currentSearchTerm) || 
+                           desc.includes(currentSearchTerm) || 
+                           type.includes(currentSearchTerm);
+                });
+            }
+            
+            renderFileList(filteredFiles);
+        }
+
         function renderFileList(fileData) {
             const fileList = document.getElementById('fileList');
-            fileList.innerHTML = '';
             
             if (fileData.length === 0) {
                 fileList.innerHTML = `
@@ -687,13 +313,15 @@
                             <i class="fas fa-folder-open"></i>
                         </div>
                         <div class="file-details">
-                            <div class="file-name">暂无资源</div>
-                            <div class="file-info">请管理员添加资源</div>
+                            <div class="file-name">未找到匹配的资源</div>
+                            <div class="file-info">请尝试其他关键词或分类</div>
                         </div>
                     </div>
                 `;
                 return;
             }
+            
+            fileList.innerHTML = '';
             
             fileData.forEach(file => {
                 const fileItem = document.createElement('div');
@@ -808,7 +436,8 @@
             
             try {
                 const fileData = JSON.parse(jsonInput);
-                renderFileList(fileData);
+                currentFileData = fileData;
+                renderFilteredFiles();
                 updateStats(fileData);
                 alert('资源列表更新成功！');
             } catch (error) {
@@ -861,11 +490,11 @@
         }
         
         function setupSecretArea() {
-            const secretFooter = document.getElementById('secretFooter');
+            const secretTrigger = document.getElementById('secretTrigger');
             const secretIndicator = document.getElementById('secretIndicator');
             const clickCountSpan = document.getElementById('clickCount');
             
-            secretFooter.addEventListener('click', () => {
+            secretTrigger.addEventListener('click', () => {
                 clickCount++;
                 clickCountSpan.textContent = clickCount;
                 secretIndicator.style.display = 'block';
@@ -893,6 +522,89 @@
                 passwordInput.value = '';
                 passwordInput.focus();
             }
+        }
+        
+        function switchAdminTab(tabName) {
+            document.querySelectorAll('.admin-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.admin-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(`${tabName}Section`).classList.add('active');
+            document.querySelector(`.admin-tab:nth-child(${tabName === 'form' ? 1 : 2})`).classList.add('active');
+        }
+        
+        function addResource() {
+            const name = document.getElementById('resourceName').value.trim();
+            if (!name) {
+                alert('资源名称不能为空');
+                return;
+            }
+            
+            const newResource = {
+                id: Date.now(),
+                name: name,
+                description: document.getElementById('resourceDesc').value.trim() || '',
+                size: document.getElementById('resourceSize').value.trim() || '',
+                type: document.getElementById('resourceType').value.trim() || '',
+                link: document.getElementById('resourceLink').value.trim() || '',
+                cloud: document.getElementById('cloudName').value.trim() || '',
+                cloudLink: document.getElementById('cloudLink').value.trim() || '',
+                code: document.getElementById('accessCode').value.trim() || '',
+                directLink: document.getElementById('directLink').value.trim() || '',
+                downloads: 0
+            };
+            
+            currentFileData.push(newResource);
+            renderFilteredFiles();
+            updateStats(currentFileData);
+            
+            document.getElementById('resourceName').value = '';
+            document.getElementById('resourceDesc').value = '';
+            document.getElementById('resourceSize').value = '';
+            document.getElementById('resourceType').value = '';
+            document.getElementById('resourceLink').value = '';
+            document.getElementById('cloudName').value = '';
+            document.getElementById('cloudLink').value = '';
+            document.getElementById('accessCode').value = '';
+            document.getElementById('directLink').value = '';
+            
+            document.getElementById('jsonData').value = JSON.stringify(currentFileData, null, 2);
+            
+            alert('资源添加成功！');
+        }
+        
+        function generateJsonCode() {
+            if (currentFileData.length === 0) {
+                alert('请先添加资源');
+                return;
+            }
+            
+            const jsonString = JSON.stringify(currentFileData, null, 2);
+            document.getElementById('jsonCodeDisplay').textContent = jsonString;
+        }
+        
+        function copyJsonCode() {
+            const jsonCode = document.getElementById('jsonCodeDisplay').textContent;
+            if (!jsonCode || jsonCode === '添加资源后点击"生成JSON"按钮') {
+                alert('请先生成JSON代码');
+                return;
+            }
+            
+            navigator.clipboard.writeText(jsonCode).then(() => {
+                const notification = document.getElementById('copyNotification');
+                notification.textContent = 'JSON代码已复制到剪贴板！';
+                notification.style.display = 'block';
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 2000);
+            }).catch(err => {
+                console.error('复制失败:', err);
+                alert('复制失败，请手动复制');
+            });
         }
     </script>
 </body>
